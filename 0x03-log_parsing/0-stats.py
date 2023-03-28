@@ -1,44 +1,46 @@
 #!/usr/bin/python3
-""" A script that reads stdin line by line and computes metrics """
+
+""" script that reads stdin line by line and computes metrics """
 
 import sys
 
 
-def print_status(dict, size):
-    """Print the format"""
-    print("File size: {}".format(size))
-    for key in sorted(dict.keys()):
-        if dict[key] != 0:
-            print("{}: {}".format(key, dict[key]))
+def printStatus(dic, size):
+    """ Prints information """
+    print("File size: {:d}".format(size))
+    for i in sorted(dic.keys()):
+        if dic[i] != 0:
+            print("{}: {:d}".format(i, dic[i]))
 
 
-status_dict = {'200': 0, '301': 0, '400': 0, '401': 0, '403': 0,
-               '404': 0, '405': 0, '500': 0}
+# sourcery skip: use-contextlib-suppress
+statusCodes = {"200": 0, "301": 0, "400": 0, "401": 0, "403": 0,
+               "404": 0, "405": 0, "500": 0}
 
-file_size = 0
 count = 0
+size = 0
 
 try:
     for line in sys.stdin:
         if count != 0 and count % 10 == 0:
-            print_status(status_dict, file_size)
+            printStatus(statusCodes, size)
 
-        el = line.split(" ")
+        stlist = line.split()
         count += 1
 
         try:
-            file_size += int(el[-1])
-        except:
+            size += int(stlist[-1])
+        except Exception:
             pass
 
         try:
-            if el[-2] in status_dict.keys():
-                status_dict[el[-2]] += 1
-        except:
+            if stlist[-2] in statusCodes:
+                statusCodes[stlist[-2]] += 1
+        except Exception:
             pass
-    print_status(status_dict, file_size)
+    printStatus(statusCodes, size)
 
 
 except KeyboardInterrupt:
-    print_status(status_dict, file_size)
+    printStatus(statusCodes, size)
     raise
